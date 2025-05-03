@@ -1,0 +1,68 @@
+local cam = workspace.CurrentCamera
+local runservice = game:GetService("RunService")
+
+-- ESP settings for different objects
+local ESP_CONFIG = {
+    ["Shelter Key"] = {
+        Color = Color3.fromRGB(255, 255, 255), -- White
+        Label = "🔑 Shelter Key",
+        Size = 13
+    },
+    ["Bloodmoon Fragment"] = {
+        Color = Color3.fromRGB(255, 50, 50),   -- Red
+        Label = "🔴 Bloodmoon Fragment",
+        Size = 15
+    }
+}
+
+-- Function to create ESP for an object
+function esp(target)
+    if not ESP_CONFIG[target.Name] then return end -- Skip if not in config
+
+    local config = ESP_CONFIG[target.Name]
+    local espText = Drawing.new("Text")
+    espText.Visible = false
+    espText.Center = true
+    espText.Outline = true
+    espText.Font = 2
+    espText.Color = config.Color
+    espText.Size = config.Size
+    espText.Text = config.Label
+
+    local connection
+    connection = runservice.RenderStepped:Connect(function()
+        if target and target:IsDescendantOf(workspace) then
+            local pos, onScreen = cam:WorldToViewportPoint(target.Position)
+            
+            if onScreen then
+                -- Add distance to label
+                local distance = (cam.CFrame.Position - target.Position).Magnitude
+                espText.Text = string.format("%s (%.1fm)", config.Label, distance)
+                
+                espText.Position = Vector2.new(pos.X, pos.Y)
+                espText.Visible = true
+            else
+                espText.Visible = false
+            end
+        else
+            -- Cleanup
+            espText.Visible = false
+            espText:Remove()
+            connection:Disconnect()
+        end
+    end)
+end
+
+-- Initial scan for existing objects
+for _, child in ipairs(workspace:GetChildren()) do
+    if ESP_CONFIG[child.Name] then
+        esp(child)
+    end
+end
+
+-- Listen for new objects
+workspace.ChildAdded:Connect(function(child)
+    if ESP_CONFIG[child.Name] then
+        esp(child)
+    end
+end)
