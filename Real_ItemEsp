@@ -66,3 +66,10 @@ workspace.ChildAdded:Connect(function(child)
         esp(child)
     end
 end)
+
+
+game:GetService("StarterGui"):SetCore("SendNotification",{
+	Title = "Loaded", -- Required
+	Text = "Thanks for using this script! This script is open source too!", -- Required
+	Icon = "rbxassetid://1234567890" -- Optional
+})
