@@ -8,9 +8,9 @@ local ESP_CONFIG = {
         Label = "🔑 Shelter Key",
         Size = 13
     },
-    ["Bloodmoon Fragment"] = {
+    ["Blood Moon Fragment"] = {
         Color = Color3.fromRGB(255, 50, 50),   -- Red
-        Label = "🔴 Bloodmoon Fragment",
+        Label = "🔴 Blood Moon Fragment",
         Size = 15
     }
 }
